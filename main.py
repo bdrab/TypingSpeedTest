@@ -22,7 +22,7 @@ WORDS = ["gesture", "finished", "eternal", "pluck", "separate", "wander", "coal"
          "drill", "loan", "retirement", "estate", "few", "wrong", "pie", "nationalism", "bring", "proud", "god",
          "reptile", "topple", "solid", "redundancy", "method", "artificial", "soul", "deprivation", "zero", "fail",
          "management", "heavy", "refund", "cross", "prevalence", "dimension", "safe"]
-TIME = 6000
+TIME = 60000
 
 
 def first_mode():
