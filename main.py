@@ -22,6 +22,7 @@ WORDS = ["gesture", "finished", "eternal", "pluck", "separate", "wander", "coal"
          "drill", "loan", "retirement", "estate", "few", "wrong", "pie", "nationalism", "bring", "proud", "god",
          "reptile", "topple", "solid", "redundancy", "method", "artificial", "soul", "deprivation", "zero", "fail",
          "management", "heavy", "refund", "cross", "prevalence", "dimension", "safe"]
+TIME = 6000
 
 
 def first_mode():
@@ -30,18 +31,29 @@ def first_mode():
     selected_words = []
     words_list = []
 
+    def timer(time):
+        if time > 0:
+            timer_field.config(text=f"Time left: {time}")
+            window_first_mode.after(1000, timer, time-1)
+
     def start_counting():
         text_field["state"] = "normal"
-        window_first_mode.after(60000, print_result)
         start_button["state"] = "disabled"
+
+        timer(TIME // 1000)
+        window_first_mode.after(TIME, print_result)
         window_first_mode.bind("<Return>", save_user_word)
+
         words_list.extend(WORDS)
         find_new_word()
 
     def print_result():
+        timer_field.config(text="Time left: 0")
+
         start_button["state"] = "normal"
         text_field["state"] = "disabled"
         window_first_mode.unbind("<Return>")
+
         correct_word = 0
         for word in user_words:
             if word in selected_words:
@@ -62,42 +74,53 @@ def first_mode():
         word = random.choice(words_list)
         words_list.remove(word)
         selected_words.append(word)
-        text_label.config(text=word)
+        text_label.config(text=word, font=('Helvatical bold', 20))
+        text_label.grid(row=2, column=0, columnspan=2, pady=2)
 
     window_first_mode = tk.Toplevel()
-    window_first_mode.geometry("370x150")
+    window_first_mode.geometry("370x220")
     window_first_mode.resizable(height=False, width=False)
-
-    text_label = tk.Label(window_first_mode,
-                          text="Click 'START' to start test and press 'ENTER' after every word.",
-                          wraplength=window_first_mode.winfo_y())
-    text_label.grid(row=0, column=0, columnspan=2)
 
     start_button = tk.Button(window_first_mode,
                              text="Start",
                              width=20,
                              command=start_counting,
                              font=("Helvetica bold", 13))
-    start_button.grid(row=1, column=0)
+    start_button.grid(row=0, column=0)
 
     exit_button_popup = tk.Button(window_first_mode,
                                   text="EXIT",
                                   width=20,
                                   command=window_first_mode.destroy,
                                   font=("Helvetica bold", 13))
-    exit_button_popup.grid(row=1, column=1)
+    exit_button_popup.grid(row=0, column=1)
 
+    timer_field = tk.Label(window_first_mode, text=f"Time left: {TIME//1000}", font=("Helvetica bold", 13))
+    timer_field.grid(row=1, column=0, columnspan=2, pady=(10, 0))
+
+    text_label = tk.Label(window_first_mode,
+                          text="Click 'START' to start test and press 'ENTER' after every word.",
+                          wraplength=window_first_mode.winfo_y())
+    text_label.grid(row=2, column=0, columnspan=2, pady=10)
     text_field = tk.Text(window_first_mode, height=5, width=31)
-    text_field.grid(row=2, column=0, columnspan=2, pady=10)
+    text_field.grid(row=3, column=0, columnspan=2)
     text_field["state"] = "disabled"
     window_first_mode.grab_set()
 
 
 def second_mode():
+
+    def timer(time):
+        if time > 0:
+            timer_field.config(text=f"Time left: {time}")
+            window_second_mode.after(1000, timer, time-1)
+
     def start_counting():
         text_field["state"] = "normal"
-        window_second_mode.after(60000, print_result)
         start_button["state"] = "disabled"
+        text_field.delete("1.0", "end")
+        timer(TIME//1000)
+        window_second_mode.after(TIME, print_result)
 
     def print_result():
         correct_word = 0
@@ -131,23 +154,33 @@ def second_mode():
             start_counting()
         else:
             window_second_mode.destroy()
-        start_button["state"] = "normal"
-        text_field["state"] = "disabled"
 
     window_second_mode = tk.Toplevel()
     window_second_mode.geometry("500x500")
     window_second_mode.resizable(height=False, width=False)
-    text_label = tk.Label(window_second_mode, text=TEXT_TO_WRITE, font=("Helvetica bold", 13), wraplength=500)
-    text_label.grid(row=0, column=0, columnspan=2)
 
-    start_button = tk.Button(window_second_mode, text="Start", width=20, command=start_counting)
-    start_button.grid(row=1, column=0)
+    start_button = tk.Button(window_second_mode,
+                             text="Start",
+                             width=27,
+                             command=start_counting,
+                             font=("Helvetica bold", 13))
+    start_button.grid(row=0, column=0)
 
-    exit_button_popup = tk.Button(window_second_mode, text="EXIT", width=20, command=window_second_mode.destroy)
-    exit_button_popup.grid(row=1, column=1)
+    exit_button_popup = tk.Button(window_second_mode,
+                                  text="EXIT",
+                                  width=27,
+                                  command=window_second_mode.destroy,
+                                  font=("Helvetica bold", 13))
+    exit_button_popup.grid(row=0, column=1)
 
-    text_field = tk.Text(window_second_mode, height=5, width=62)
-    text_field.grid(row=2, column=0, columnspan=2)
+    timer_field = tk.Label(window_second_mode, text=f"Time left: {TIME//1000}", font=("Helvetica bold", 13))
+    timer_field.grid(row=1, column=0, columnspan=2, pady=(10, 0))
+
+    text_label = tk.Label(window_second_mode, text=TEXT_TO_WRITE, font=("Helvetica bold", 13), wraplength=400)
+    text_label.grid(row=2, column=0, columnspan=2)
+
+    text_field = tk.Text(window_second_mode, height=10, width=50)
+    text_field.grid(row=3, column=0, columnspan=2)
     text_field["state"] = "disabled"
     window_second_mode.grab_set()
 
